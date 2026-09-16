@@ -45,7 +45,7 @@ print(f"Max :\n{mnist.data.max(0)}\n")
 print(f"Number of targets (unique) : {len(np.unique(mnist.target))}")
 
 ## Partie D
-help(make_blobs)
+# help(make_blobs)
 x,y = make_blobs(n_samples=1000, n_features=2, centers=4)
 
 fig = plt.figure()
@@ -55,7 +55,7 @@ plt.ylabel('y')
 plt.title('Make blobs - 1000 données')
 plt.xlim(-15,15)
 plt.ylim(-15,15)
-
+plt.savefig('make_blobs_1000.png')
 
 a,b = make_blobs(n_samples=100, n_features=2, centers=2)
 c,d = make_blobs(n_samples=500, n_features=2, centers=3)
@@ -93,4 +93,5 @@ plt.title('Fusion des deux ensembles')
 plt.xlim(-15,15)
 plt.ylim(-15,15)
 
+plt.savefig('fusion_ens.png')
 plt.show()
