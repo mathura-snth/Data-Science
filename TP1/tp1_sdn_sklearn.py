@@ -24,19 +24,19 @@ for i,classe in enumerate(target):
 # OU :   for i in range(len(feature_names)):
 #           print(np.mean((data[:,i])))
 
-print("\n\nmean : ", data.mean(0))
-print("std : ", data.std(0))
-print("min : ", data.min(0))
-print("max : ", data.max(0))
+print("\n\nMoyenne : ", data.mean(0))
+print("Écart-type : ", data.std(0))
+print("Min : ", data.min(0))
+print("Max : ", data.max(0))
 
-print(f"\n\nNumber of data : {data.shape[0]}")
-print(f"Number of features : {data.shape[1]}")
-print(f"Number of classes : {target_names.size}")
+print(f"\n\nNombre de data : {data.shape[0]}")
+print(f"Nombre de variables : {data.shape[1]}")
+print(f"Nombre de classes : {target_names.size}")
 
 ## Partie C
 mnist = datasets.fetch_openml('MNIST_784')
-print(f"\n\nData :\n{mnist.data}\n")
-print(f"Shape :\n{mnist.data.shape}\n")
+print(f"\n\nMatrice des données :\n{mnist.data}\n")
+print(f"Nombre de données et de variables :\n{mnist.data.shape}\n")
 print(f"Target :\n{mnist.target}\n")
 print(f"Mean :\n{mnist.data.mean(0)}\n")
 print(f"Std :\n{mnist.data.std(0)}\n")
