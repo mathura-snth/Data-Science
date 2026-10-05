@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import datasets
 
 nb_max = 1000
 e = 0.01
@@ -50,3 +51,38 @@ plt.grid(True)
 plt.show()
 
 
+import numpy as np
+
+def dg_regression(x, y, eta, nombremax):
+    a, b = 0.0, 0.0 
+    
+    for _ in range(nombremax):
+        y_pred = a * x + b
+        erreur = y_pred - y
+        
+        grad_a = 2 * np.sum(x * erreur)
+        grad_b = 2 * np.sum(erreur)
+        a = a - eta * grad_a
+        b = b - eta * grad_b
+        
+    E_min = np.sum((a * x + b - y)**2)
+    return a, b, E_min
+
+x, y = datasets.make_regression(n_samples=100, n_features=1, noise=15, random_state=42)
+x = x.flatten() # On s'assure que x est un tableau 1D
+
+parametres = [
+    (0.001, 100),
+    (0.001, 500),
+    (0.001, 1000),
+    (0.01, 1000),
+    (1, 1000)
+]
+
+print("Résultats de la Descente de Gradient :")
+for eta, n_max in parametres:
+    try:
+        a_min, b_min, E_min = dg_regression(x, y, eta, n_max)
+        print(f"eta={eta:<5} | iter={n_max:<4} -> a={a_min:.4f}, b={b_min:.4f}, E={E_min:.4f}")
+    except OverflowError:
+        print(f"eta={eta:<5} | iter={n_max:<4} -> Divergence (valeurs trop grandes)")
