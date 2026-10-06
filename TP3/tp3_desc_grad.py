@@ -53,23 +53,30 @@ plt.show()
 
 import numpy as np
 
-def dg_regression(x, y, eta, nombremax):
+'''
+1. Pour a : 2 * somme( xi * (axi + b - yi) )
+   Pour b : 2 * somme( (axi + b - yi) )
+'''
+
+def dg_regression(x, y, eta, nombremax,e=1e-4):
     a, b = 0.0, 0.0 
     
     for _ in range(nombremax):
-        y_pred = a * x + b
-        erreur = y_pred - y
+        dff = (a * x + b) - y
         
-        grad_a = 2 * np.sum(x * erreur)
-        grad_b = 2 * np.sum(erreur)
-        a = a - eta * grad_a
-        b = b - eta * grad_b
+        grad_a = 2 * np.sum(x * dff)
+        grad_b = 2 * np.sum(dff)
         
+        a_suiv = a - eta * grad_a
+        b_suiv = b - eta * grad_b
+
+        a, b = a_suiv, b_suiv
+    
     E_min = np.sum((a * x + b - y)**2)
     return a, b, E_min
 
 x, y = datasets.make_regression(n_samples=100, n_features=1, noise=15, random_state=42)
-x = x.flatten() # On s'assure que x est un tableau 1D
+x = x.flatten()  
 
 parametres = [
     (0.001, 100),
@@ -81,8 +88,44 @@ parametres = [
 
 print("Résultats de la Descente de Gradient :")
 for eta, n_max in parametres:
-    try:
-        a_min, b_min, E_min = dg_regression(x, y, eta, n_max)
-        print(f"eta={eta:<5} | iter={n_max:<4} -> a={a_min:.4f}, b={b_min:.4f}, E={E_min:.4f}")
-    except OverflowError:
-        print(f"eta={eta:<5} | iter={n_max:<4} -> Divergence (valeurs trop grandes)")
+    a_min, b_min, E_min = dg_regression(x, y, eta, n_max)
+    print(f"eta={eta} | iter={n_max} | a={a_min} | b={b_min} | E={E_min}")
+
+#Que constatez-vous ? 
+#...\pythoncore-3.14-64\Lib\site-packages\numpy\_core\fromnumeric.py:83: RuntimeWarning: overflow encountered in reduce
+#  return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+#...\tp3_desc_grad.py:65: RuntimeWarning: invalid value encountered in add
+#  dff = (a * x + b) - y
+#eta=1 | iter=1000 | a=nan | b=nan | E=nan
+
+print("Question 4 : L'erreur E diminue lorsque le nombre d'itérations augmente de 100 à 1000. L'erreur 'NaN' obtenue avec eta=1 s'explique par le fait que le pas d'apprentissage est beaucoup trop grand par rapport à l'échelle des données, ce qui fait diverger les coefficients a et b")
+
+from scipy.stats import linregress
+
+result = linregress(x, y)
+a_sci = result.slope
+b_sci = result.intercept
+E_sci = np.sum((a_sci * x + b_sci - y) ** 2)
+
+print(f"a = {a_sci} | b = {b_sci} | E = {E_sci}")
+
+print("Question 5 : Les deux méthodes aboutissent aux mêmes paramètres et au même coût minimal E: scipy résout le problème par une méthode analytique exacte instantanée, tandis que la descente de gradient s'en approche itérativement.")
+
+a_dg, b_dg, e_min = dg_regression(x, y, eta=0.001, nombremax=1000)
+x_droite = np.linspace(x.min(), x.max(), 100)
+y_dg = a_dg * x_droite + b_dg
+y_sci = a_sci * x_droite + b_sci
+
+plt.figure(figsize=(10, 6))
+plt.scatter(x, y, color='gray', alpha=0.6, label="Données réelles")
+plt.plot(x_droite, y_dg, color="red", linestyle="--", linewidth=3, label=f"DG (a={a_dg:.2f}, b={b_dg:.2f})")
+plt.plot(x_droite, y_sci, color="green", linewidth=1.5, label=f"Scipy (a={a_sci:.2f}, b={b_sci:.2f})")
+
+plt.title("Régression Linéaire : Descente de Gradient vs Scipy Linregress")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.grid(True)
+plt.show()
+# Puisque les deux méthodes aboutissent aux mêmes valeurs pour la pente $a$ et l'ordonnée à l'origine $b$, 
+# les deux droites tracent exactement la même trajectoire et se superposent. 
