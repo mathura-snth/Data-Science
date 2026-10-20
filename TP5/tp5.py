@@ -96,11 +96,12 @@ def kmeans_manuel(X, k):
 iris = datasets.load_iris()
 X,Y = iris.data,iris.target
 print(analyse("IRIS",X,Y))
-#Question A.2 : A faire 
+
+#Question A.2 :
+# L'ACP est une méthode non supervisée, elle projette les données dans un espace de dimension plus petite en cherchant à maximiser la variance.
+# L'ADL est une méthode supervisée, on projette aussi mais cette fois en cherchant des axes optimaux en maximisant la séparabilité entre les classes
 
 #Question B.1 (Suite) : 
-
-
 print("1er lancement du KMeans Manuel pour k  = 3 :")
 print(kmeans_manuel(X, 3))
 
@@ -214,9 +215,19 @@ def score_interne_externe(X,Y,cluster):
 
 Clustering_donnes_diff_algo(X,Y)
 
-#Question C.3 : 
-#Interpretation : Faut voir a quoi servent les fonctions
-#Parce que j'ai juste regarder https://scikit-learn.org/ et copier l'exemple :lol:
+# La différence entre un score interne et un score externe repose sur les données requises et l'utilité du score :
+# pour un score interne :
+#       * on a seulement besoin des caractéristiques des données (donc X) et les clusters prédits, 
+#       * on cherche à minimiser la distance intra cluster et maximiser la distance inter cluster
+
+# pour un score externe :
+#       * on a, en plus, besoin des vraies étiquettes (Y)
+#       * le but est de vérifier le bon étiquettage (maximiser la similarité avec la répartition réelle)
+
+
+# Question C.3 : 
+# Compte tenu des résultats des différentes méthodes de clustering,
+# les méthodes qui ont les meilleurs scores et dont les scores sont les plus homogènes sont : Spectral et Kmeans manuel
 
 #Question D.1 :
 def KNN(X,Y,loo):
